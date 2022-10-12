@@ -18,8 +18,6 @@ namespace The15Game
 
 		private static bool InvertedControls = false;
 
-		private static bool Running = true;
-
 		private static void Main()
 		{
 			Console.Title = "The 15-Game";

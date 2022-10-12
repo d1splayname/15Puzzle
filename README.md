@@ -1,4 +1,4 @@
-# 15Puzzle
+# The 15 Puzzle
 The 15 Puzzle programmed for the AP Computer Science Principles AP Exam.
 
 Controls:

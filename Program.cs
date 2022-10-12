@@ -10,6 +10,8 @@ namespace The15Game
 		private static Random RandomNumberGenerator = new Random();
 
 		private static Tile[,] BoardOrder = new Tile[4, 4];
+		private static string[,] BoardText = new string[4, 4] { { " 1", " 2", " 3", " 4" }, { " 5", " 6", " 7", " 8" }, { " 9", "10", "11", "12" }, { "13", "14", "15", "  " } };
+
 		private static Point SpaceTile;
 
 		private static int NumberOfMoves = 0;
@@ -22,13 +24,11 @@ namespace The15Game
 		{
 			Console.Title = "The 15-Game";
 
-			string[,] TileText = new string[4, 4] { { " 1", " 2", " 3", " 4" }, { " 5", " 6", " 7", " 8" }, { " 9", "10", "11", "12" }, { "13", "14", "15", "  " } };
-
 			for (int X = 0; X < 4; X++)
 			{
 				for (int Y = 0; Y < 4; Y++)
 				{
-					BoardOrder[X, Y] = new Tile(X, Y, TileText[X, Y]);
+					BoardOrder[X, Y] = new Tile(X, Y, text: BoardText[X, Y]);
 				}
 			}
 
@@ -37,12 +37,13 @@ namespace The15Game
 
 			ConsoleKey UserInput;
 
+			DrawBoard();
+			DisplayMenuOptions();
+			DisplayMoves();
+
 			// Main game loop
 			while (true)
 			{
-				DrawBoard(Running);
-				DisplayMenuOptions();
-
 				UserInput = Console.ReadKey(true).Key;
 
 				if (UserInput == ConsoleKey.Q)
@@ -128,9 +129,47 @@ namespace The15Game
 						}
 					}
 				}
+
+				DrawBoard();
+
+				// Check solved state
+				if (Solved())
+				{
+					Console.SetCursorPosition(0, 10);
+					Console.WriteLine("Solved!");
+					Console.WriteLine("Press enter to start a new game...");
+					Console.ReadLine();
+
+					// Restart code
+					NumberOfMoves = 0;
+					Scramble();
+
+					Console.Clear();
+
+					DrawBoard();
+					DisplayMenuOptions();
+					DisplayMoves();
+				}
 			}
 		}
 		
+		// Check if board is solved
+		private static bool Solved()
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				for (int j = 0; j < 4; j++)
+				{
+					if (BoardOrder[i, j].Text != (BoardText[i, j]))
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
 		// Exit game
 		private static void Quit()
 		{
@@ -148,6 +187,7 @@ namespace The15Game
 			else if (Input == ConsoleKey.N)
 			{
 				Console.Clear();
+				DisplayMenuOptions();
 
 				return;
 			}
@@ -174,12 +214,13 @@ namespace The15Game
 			{
 				NumberOfMoves = 0;
 				Scramble();
-
+				
 				Console.Clear();
 			}
 			else if (Input == ConsoleKey.N)
 			{
 				Console.Clear();
+				DisplayMenuOptions();
 
 				return;
 			}
@@ -191,6 +232,8 @@ namespace The15Game
 
 				Restart();
 			}
+
+			DisplayMenuOptions();
 		}
 
 		private static void MoveRight()
@@ -224,21 +267,18 @@ namespace The15Game
 		#region Displays
 
 		// Draws the board into the console window
-		private static void DrawBoard(bool running)
+		private static void DrawBoard()
 		{
-			if (running)
+			for (int I = 0; I < 4; I++)
 			{
-				for (int I = 0; I < 4; I++)
-				{
-					Console.SetCursorPosition(0, I * 2);
-					Console.WriteLine("+--+--+--+--+");
-					Console.SetCursorPosition(0, I * 2 + 1);
-					Console.WriteLine($"|{BoardOrder[I, 0].Text}|{BoardOrder[I, 1].Text}|{BoardOrder[I, 2].Text}|{BoardOrder[I, 3].Text}|");
-				}
-
-				Console.SetCursorPosition(0, 8);
+				Console.SetCursorPosition(0, I * 2);
 				Console.WriteLine("+--+--+--+--+");
+				Console.SetCursorPosition(0, I * 2 + 1);
+				Console.WriteLine($"|{BoardOrder[I, 0].Text}|{BoardOrder[I, 1].Text}|{BoardOrder[I, 2].Text}|{BoardOrder[I, 3].Text}|");
 			}
+
+			Console.SetCursorPosition(0, 8);
+			Console.WriteLine("+--+--+--+--+");
 		}
 
 		private static void DisplayMenuOptions()

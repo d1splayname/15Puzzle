@@ -12,9 +12,9 @@ namespace The15Game
 		private static Tile[,] BoardOrder = new Tile[4, 4];
 		private static Point SpaceTile;
 
-		private static int NumberOfMoves;
+		private static int NumberOfMoves = 0;
 
-		private static bool Inverted = false;
+		private static bool InvertedControls = false;
 
 		private static bool Running = true;
 
@@ -32,13 +32,15 @@ namespace The15Game
 				}
 			}
 
+			// Initial scramble
 			Scramble();
 
 			ConsoleKey UserInput;
 
+			// Main game loop
 			while (true)
 			{
-				DisplayBoard(Running);
+				DrawBoard(Running);
 				DisplayMenuOptions();
 
 				UserInput = Console.ReadKey(true).Key;
@@ -47,28 +49,16 @@ namespace The15Game
 				{
 					Quit();
 				}
-				else if (UserInput == ConsoleKey.P)
-				{
-					while (true)
-					{
-						Thread.Sleep(20);
-
-						if (Console.ReadKey(true).Key == ConsoleKey.P)
-						{
-							break;
-						}
-					}
-				}
 				else if (UserInput == ConsoleKey.R)
 				{
 					Restart();
 				}
 				else if (UserInput == ConsoleKey.I)
 				{
-					Inverted = !Inverted;
+					InvertedControls = !InvertedControls;
 				}
 
-				if (!Inverted)
+				if (!InvertedControls)
 				{
 					if (UserInput == ConsoleKey.UpArrow)
 					{
@@ -140,7 +130,8 @@ namespace The15Game
 				}
 			}
 		}
-
+		
+		// Exit game
 		private static void Quit()
 		{
 			Console.Clear();
@@ -170,6 +161,7 @@ namespace The15Game
 			}
 		}
 
+		// Rescrambles board and resets move founder
 		private static void Restart()
 		{
 			Console.Clear();
@@ -231,7 +223,8 @@ namespace The15Game
 
 		#region Displays
 
-		private static void DisplayBoard(bool running)
+		// Draws the board into the console window
+		private static void DrawBoard(bool running)
 		{
 			if (running)
 			{
@@ -251,7 +244,6 @@ namespace The15Game
 		private static void DisplayMenuOptions()
 		{
 			DisplayQuitOption();
-			DisplayPauseOption();
 			DisplayRestartOption();
 			DisplayInvertInputOption();
 		}
@@ -262,21 +254,15 @@ namespace The15Game
 			Console.Write("[Q]uit Game");
 		}
 
-		private static void DisplayPauseOption()
-		{
-			Console.SetCursorPosition(17, 1);
-			Console.Write("[P]ause");
-		}
-
 		private static void DisplayRestartOption()
 		{
-			Console.SetCursorPosition(17, 2);
+			Console.SetCursorPosition(17, 1);
 			Console.Write("[R]estart");
 		}
 
 		private static void DisplayInvertInputOption()
 		{
-			Console.SetCursorPosition(17, 3);
+			Console.SetCursorPosition(17, 2);
 			Console.Write("[I]nvert Input");
 		}
 
@@ -301,12 +287,14 @@ namespace The15Game
 
 		#region ScrambleBoard
 
+		// Scramble the tiles on the board
 		private static void Scramble()
 		{
 			int SwapTimes = RandomNumberGenerator.Next(25, 50) * 2;
 
 			Point[] Indecies = new Point[2] { Point.Empty, Point.Empty };
 
+			// Selects two random tiles and swapping them around
 			for (int I = 0; I < SwapTimes; I++)
 			{
 				do
@@ -331,6 +319,7 @@ namespace The15Game
 			}
 		}
 
+		// Switches the position of two tiles
 		private static void SwapTiles(Point Index0, Point Index1)
 		{
 			string Temp = BoardOrder[Index0.X, Index0.Y].Text;
@@ -341,6 +330,7 @@ namespace The15Game
 		#endregion ScrambleBoard
 	}
 
+	// Class that represents a square on the board
 	public class Tile
 	{
 		public int X = -1;
